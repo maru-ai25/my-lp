@@ -74,10 +74,23 @@ input:focus{outline:2px solid var(--pri);outline-offset:1px;border-color:transpa
 .r-sec{margin-top:22px}
 .r-sec h3{font-size:14px;margin:0 0 4px;color:var(--sub);font-weight:700}
 .r-sec p{margin:0;font-size:15px}
+.lock{position:relative;margin:24px 0 0;border-radius:16px;overflow:hidden;background:#faf6f4}
+.lock-img{position:relative;aspect-ratio:1/1;overflow:hidden}
+.lock-img img{width:100%;height:100%;object-fit:cover;filter:blur(14px) saturate(1.1);transform:scale(1.12);display:block}
+.lock-img .ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,250,246,.35);text-align:center;padding:0 20px}
+.lock-ic{font-size:40px;line-height:1}
+.lock-img .ov b{display:block;font-size:17px;margin-top:8px;text-shadow:0 1px 8px #fff}
+.lock-img .ov span{font-size:13px;margin-top:4px;text-shadow:0 1px 8px #fff}
+.lock-txt{padding:16px 16px 18px}
+.lock-txt h3{font-size:14px;margin:0 0 4px;color:var(--sub);font-weight:700}
+.lock-txt p{margin:0;font-size:15px;position:relative;max-height:3.4em;overflow:hidden}
+.lock-txt p::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2.2em;background:linear-gradient(rgba(250,246,244,0),#faf6f4)}
+.lock-tag{display:inline-block;font-size:12px;font-weight:700;color:#06a347;margin-top:10px}
+.line-warn{font-size:12px;color:#c0475f;font-weight:700;margin:10px 0 0}
 .mail-status{font-size:13px;text-align:center;color:var(--sub);margin:22px 0 0;padding:12px;border-radius:12px;background:#f6f0ed}
 .line-box{margin:26px 0 0;padding:20px 16px;border-radius:16px;background:#f3faf4;text-align:center}
 .line-lead{margin:0 0 12px;font-size:15px}
-.btn.line{background:#06c755;text-decoration:none}
+.btn.line{background:#06c755;text-decoration:none;font-size:15px;padding:15px 10px;letter-spacing:0}
 .line-note{font-size:12px;color:var(--sub);margin:12px 0 0;line-height:1.7;text-align:left}
 .line-note a{color:#06a347}
 .others{margin-top:26px}
@@ -160,12 +173,10 @@ input:focus{outline:2px solid var(--pri);outline-offset:1px;border-color:transpa
       <div class="ratio"><div class="p" id="rp"></div><div class="a" id="ra"></div></div>
       <div class="ratio-lab"><span class="p" id="rpl"></span><span class="a" id="ral"></span></div>
 
-      <div class="r-sec"><h3>あなたはこんな人</h3><p id="r-desc"></p></div>
-      <div class="r-sec"><h3>これからの伸ばし方</h3><p id="r-tip"></p></div>
-
       <div class="line-box">
-        <p class="line-lead">あなたのタイプの<b>くわしい解説</b>を<br>LINEでお届けします</p>
-        <a class="btn line" id="line-btn" href="#" target="_blank" rel="noopener">LINEで結果を受け取る</a>
+        <p class="line-lead"><b>イラストカード</b>と<b>解説の続き</b>は<br>LINEでお届けします</p>
+        <a class="btn line" id="line-btn" href="#" target="_blank" rel="noopener">🔒 続きをLINEで受け取る（無料）</a>
+        <p class="line-warn">この画面を閉じると結果は消えてしまいます。<br>LINEに残しておいてね</p>
         <p class="line-note">ボタンを押すとLINEが開いて、メッセージが入った状態になります。そのまま<b>送信</b>してね。<br>まだ友だちになっていない人は、先に<a id="line-add" href="#" target="_blank" rel="noopener">こちらから友だち追加</a>してから押してね。</p>
         <div class="line-qr">
           <p class="qr-lead">パソコンで見ている人は、<br>スマホのカメラでこのQRコードを読み取ってね</p>
@@ -173,6 +184,19 @@ input:focus{outline:2px solid var(--pri);outline-offset:1px;border-color:transpa
           <p class="qr-note">読み取るとLINEが開いて、結果のメッセージが入った状態になります</p>
         </div>
       </div>
+
+      <div class="lock">
+        <div class="lock-img">
+          <img id="lock-pic" alt="" onerror="this.style.display='none'">
+          <div class="ov"><div class="lock-ic">🔒</div><b>あなただけのイラストカード</b><span>LINEで受け取れます</span></div>
+        </div>
+        <div class="lock-txt">
+          <h3>あなたはこんな人</h3>
+          <p id="r-desc"></p>
+          <span class="lock-tag">🔒 続きと「これからの伸ばし方」はLINEで</span>
+        </div>
+      </div>
+      <a class="btn line" id="line-btn2" href="#" target="_blank" rel="noopener" style="margin-top:14px">LINEで続きを読む</a>
 
       <details class="others">
         <summary>ほかのタイプも見てみる（全10タイプ）</summary>
@@ -374,7 +398,7 @@ function showResult(){
   document.getElementById('r-level').textContent = `10段階中 レベル${lv}`;
   document.getElementById('r-catch').textContent = t.catch;
   document.getElementById('r-desc').textContent = t.desc;
-  document.getElementById('r-tip').textContent = t.tip;
+  document.getElementById('lock-pic').src = `shindan_type${String(lv).padStart(2,'0')}.jpg`;
 
   const sc = document.getElementById('scale'); sc.innerHTML = "";
   for(let i=1;i<=10;i++){
@@ -398,6 +422,7 @@ function showResult(){
 
   const msg = `シンデレラ診断の結果【${t.name}】`;
   document.getElementById('line-btn').href = `https://line.me/R/oaMessage/${encodeURIComponent(LINE_ID)}/?${encodeURIComponent(msg)}`;
+  document.getElementById('line-btn2').href = document.getElementById('line-btn').href;
   document.getElementById('line-add').href = `https://line.me/R/ti/p/${encodeURIComponent(LINE_ID)}`;
   try{
     const qr = qrcode(0,'M'); qr.addData(document.getElementById('line-btn').href); qr.make();
