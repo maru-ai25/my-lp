@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>シンデレラ診断</title>
+<meta name="description" content="シンデレラ診断｜15の質問で、あなたが「冒険者」タイプか「プリンセス」タイプかを10段階で診断します。">
+<meta property="og:title" content="シンデレラ診断｜あなたは冒険者？それともプリンセス？">
+<meta property="og:description" content="15問であなたの本当の気持ちを10段階で診断。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fbf7f4; --card:#ffffff; --ink:#3a3235; --sub:#857a7e; --line:#ece3df;
+  --pri:#e58ba5; --pri-soft:#fbe7ed; --adv:#3f9c8f; --adv-soft:#e2f2ef;
+  --btn:#3a3235; --btn-ink:#fff;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Zen Maru Gothic",system-ui,sans-serif;line-height:1.8;-webkit-font-smoothing:antialiased}
+.wrap{max-width:520px;margin:0 auto;padding:24px 16px 56px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px 22px}
+.screen{display:none}
+.screen.on{display:block;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.brand{text-align:center;font-size:13px;font-weight:700;letter-spacing:.2em;color:var(--pri);margin:0}
+h1{font-size:26px;line-height:1.45;margin:8px 0 14px;text-align:center}
+h1 .a{color:var(--adv)} h1 .p{color:var(--pri)}
+.lead{font-size:15px;color:var(--sub);text-align:center;margin:0 0 22px}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 24px}
+.duo div{border-radius:14px;padding:14px 12px;font-size:13px;line-height:1.6}
+.duo b{display:block;font-size:15px;margin-bottom:4px}
+.duo .p{background:var(--pri-soft)} .duo .p b{color:#c45f7e}
+.duo .a{background:var(--adv-soft)} .duo .a b{color:#2d7b70}
+.meta{font-size:13px;color:var(--sub);text-align:center;margin:0 0 18px}
+button{font-family:inherit;cursor:pointer}
+.btn{display:block;width:100%;border:0;border-radius:999px;padding:15px 20px;font-size:16px;font-weight:700;background:var(--btn);color:var(--btn-ink);transition:opacity .2s}
+.btn:disabled{opacity:.35;cursor:default}
+.btn.ghost{background:transparent;color:var(--sub);font-weight:500;font-size:14px;padding:10px}
+label{display:block;font-size:14px;font-weight:700;margin:0 0 6px}
+input[type=text],input[type=email]{width:100%;font:inherit;font-size:16px;padding:13px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);margin:0 0 6px}
+input:focus{outline:2px solid var(--pri);outline-offset:1px;border-color:transparent}
+.field{margin-bottom:16px}
+.err{font-size:12px;color:#c0475f;min-height:18px}
+.note{font-size:12px;color:var(--sub);margin:4px 0 20px;line-height:1.7}
+.progress{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin:4px 0 8px}
+.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pri),var(--adv));transition:width .3s}
+.qnum{font-size:13px;color:var(--sub);text-align:right;margin-bottom:12px}
+.qtext{font-size:18px;font-weight:700;line-height:1.6;margin:0 0 20px}
+.opts{display:grid;gap:10px}
+.opt{width:100%;text-align:left;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:14px;padding:14px 16px;font-size:15px;line-height:1.6;transition:background .15s,border-color .15s}
+.opt:hover{border-color:#d9c9c3}
+.opt.sel{border-color:var(--ink);background:#f6f0ed}
+.qnav{display:flex;justify-content:space-between;margin-top:14px}
+/* result */
+.r-tag{display:inline-block;font-size:13px;font-weight:700;border-radius:999px;padding:4px 14px;margin-bottom:6px}
+.r-tag.p{background:var(--pri-soft);color:#c45f7e}
+.r-tag.a{background:var(--adv-soft);color:#2d7b70}
+.r-head{text-align:center}
+.r-name{font-size:28px;font-weight:700;margin:4px 0 2px}
+.r-for{font-size:13px;color:var(--sub)}
+.r-catch{font-size:16px;font-weight:700;margin:14px 0 0}
+.scale{margin:24px 0 8px}
+.scale-row{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}
+.scale-row span{height:28px;border-radius:6px;background:var(--line);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--sub)}
+.scale-row span.on{color:#fff;font-weight:700;transform:scale(1.12)}
+.scale-lab{display:flex;justify-content:space-between;font-size:12px;margin-top:6px}
+.scale-lab .p{color:#c45f7e} .scale-lab .a{color:#2d7b70}
+.ratio{display:flex;height:10px;border-radius:10px;overflow:hidden;margin:18px 0 4px}
+.ratio .p{background:var(--pri)} .ratio .a{background:var(--adv)}
+.ratio-lab{display:flex;justify-content:space-between;font-size:13px;font-weight:700}
+.ratio-lab .p{color:#c45f7e} .ratio-lab .a{color:#2d7b70}
+.r-sec{margin-top:22px}
+.r-sec h3{font-size:14px;margin:0 0 4px;color:var(--sub);font-weight:700}
+.r-sec p{margin:0;font-size:15px}
+.mail-status{font-size:13px;text-align:center;color:var(--sub);margin:22px 0 0;padding:12px;border-radius:12px;background:#f6f0ed}
+.line-box{margin:26px 0 0;padding:20px 16px;border-radius:16px;background:#f3faf4;text-align:center}
+.line-lead{margin:0 0 12px;font-size:15px}
+.btn.line{background:#06c755;text-decoration:none}
+.line-note{font-size:12px;color:var(--sub);margin:12px 0 0;line-height:1.7;text-align:left}
+.line-note a{color:#06a347}
+.others{margin-top:26px}
+.others summary{font-size:14px;font-weight:700;cursor:pointer;color:var(--sub)}
+.others ol{padding-left:0;list-style:none;margin:12px 0 0;display:grid;gap:8px}
+.others li{font-size:13px;line-height:1.6;padding:10px 12px;border-radius:10px;background:#faf6f4}
+.others li b{font-size:14px}
+.foot{font-size:11px;color:var(--sub);text-align:center;margin-top:18px}
+.line-qr{display:none;margin:18px 0 0;padding:16px 0 0;border-top:1px dashed #cfe7d4}
+.qr-lead{font-size:13px;font-weight:700;margin:0 0 10px}
+#qr{display:inline-block;background:#fff;padding:10px;border-radius:12px}
+#qr svg{display:block;width:180px;height:180px}
+.qr-note{font-size:11px;color:var(--sub);margin:8px 0 0}
+@media (min-width:700px){.line-qr{display:block}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- スタート -->
+  <section class="screen on" id="s-start">
+    <div class="card">
+      <p class="brand">シンデレラ診断</p>
+      <h1>あなたは<span class="a">冒険者</span>？<br>それとも<span class="p">プリンセス</span>？</h1>
+      <p class="lead">「稼ぎたい」「頑張りたい」<br>その言葉の奥にある、本当の気持ちを診断します。</p>
+      <div class="duo">
+        <div class="a"><b>冒険者タイプ</b>自分の力でしっかり稼いで、自立していきたい人</div>
+        <div class="p"><b>プリンセスタイプ</b>仲間や居場所があることで、安心して輝ける人</div>
+      </div>
+      <p class="meta">全15問・約3分／結果は10段階で出ます</p>
+      <button class="btn" onclick="go('s-entry')">診断をはじめる</button>
+    </div>
+  </section>
+
+  <!-- 入力 -->
+  <section class="screen" id="s-entry">
+    <div class="card">
+      <p class="qtext" style="text-align:center">はじめに教えてください</p>
+      <div class="field">
+        <label for="nick">ニックネーム</label>
+        <input type="text" id="nick" maxlength="30" placeholder="例）まる" autocomplete="nickname">
+        <div class="err" id="nick-err"></div>
+      </div>
+      <p class="note">結果は画面に表示されます。くわしい解説はLINEで受け取れます。</p>
+      <button class="btn" onclick="startQuiz()">質問へすすむ</button>
+      <button class="btn ghost" onclick="go('s-start')">もどる</button>
+    </div>
+  </section>
+
+  <!-- 質問 -->
+  <section class="screen" id="s-quiz">
+    <div class="card">
+      <div class="progress"><i id="bar"></i></div>
+      <div class="qnum" id="qnum"></div>
+      <p class="qtext" id="qtext"></p>
+      <div class="opts" id="opts"></div>
+      <div class="qnav">
+        <button class="btn ghost" style="width:auto" id="prev" onclick="prevQ()">← 前の質問</button>
+        <span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 結果 -->
+  <section class="screen" id="s-result">
+    <div class="card">
+      <div class="r-head">
+        <div class="r-for" id="r-for"></div>
+        <span class="r-tag" id="r-tag"></span>
+        <div class="r-name" id="r-name"></div>
+        <div class="r-for" id="r-level"></div>
+        <p class="r-catch" id="r-catch"></p>
+      </div>
+
+      <div class="scale">
+        <div class="scale-row" id="scale"></div>
+        <div class="scale-lab"><span class="p">プリンセス</span><span class="a">冒険者</span></div>
+      </div>
+
+      <div class="ratio"><div class="p" id="rp"></div><div class="a" id="ra"></div></div>
+      <div class="ratio-lab"><span class="p" id="rpl"></span><span class="a" id="ral"></span></div>
+
+      <div class="r-sec"><h3>あなたはこんな人</h3><p id="r-desc"></p></div>
+      <div class="r-sec"><h3>これからの伸ばし方</h3><p id="r-tip"></p></div>
+
+      <div class="line-box">
+        <p class="line-lead">あなたのタイプの<b>くわしい解説</b>を<br>LINEでお届けします</p>
+        <a class="btn line" id="line-btn" href="#" target="_blank" rel="noopener">LINEで結果を受け取る</a>
+        <p class="line-note">ボタンを押すとLINEが開いて、メッセージが入った状態になります。そのまま<b>送信</b>してね。<br>まだ友だちになっていない人は、先に<a id="line-add" href="#" target="_blank" rel="noopener">こちらから友だち追加</a>してから押してね。</p>
+        <div class="line-qr">
+          <p class="qr-lead">パソコンで見ている人は、<br>スマホのカメラでこのQRコードを読み取ってね</p>
+          <div id="qr"></div>
+          <p class="qr-note">読み取るとLINEが開いて、結果のメッセージが入った状態になります</p>
+        </div>
+      </div>
+
+      <details class="others">
+        <summary>ほかのタイプも見てみる（全10タイプ）</summary>
+        <ol id="all-types"></ol>
+      </details>
+
+      <div style="margin-top:22px"><button class="btn ghost" onclick="restart()">もう一度診断する</button></div>
+    </div>
+    <p class="foot">結果画面はスクショしてシェアしてね</p>
+  </section>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+/* ========== 設定 ==========
+   結果を届ける公式LINE（エルメ：まる＊Instagram爆伸びセミナー）
+   LINEで送られてくる「診断結果【タイプ名】」に、エルメの自動応答が反応して
+   くわしい結果を返し、タグをつける。 */
+const LINE_ID = "@811uarqa";
+
+/* ========== 質問（s = 冒険者ポイント 0〜3） ========== */
+const QUESTIONS = [
+  {q:"休日に予定がぽっかり空いた。どうする？", o:[
+    {t:"前からやりたかった作業や勉強を、一人で黙々と進める",s:3},
+    {t:"一人で出かけるけど、SNSでみんなの近況もチェックする",s:2},
+    {t:"コミュニティやグループチャットを覗いて、誰かと話す",s:1},
+    {t:"とりあえず誰か誘う。一人で過ごすのはちょっとさみしい",s:0}]},
+  {q:"「月10万円を自分の力で稼げる方法」と「毎月みんなでワイワイ学べる場」。どちらか一つだけもらえるなら？", o:[
+    {t:"迷わず、稼げる方法",s:3},
+    {t:"稼げる方法。でも一人で続けられるかは不安",s:2},
+    {t:"学べる場。仲間がいたほうが結局がんばれそう",s:1},
+    {t:"学べる場。正直、その時間が楽しみになりそう",s:0}]},
+  {q:"講座やコミュニティに入るとき、いちばんの決め手は？", o:[
+    {t:"実際に結果が出るカリキュラムかどうか",s:3},
+    {t:"つまずいたときにすぐ聞ける、サポートの手厚さ",s:2},
+    {t:"講師の人柄や考え方に共感できるか",s:1},
+    {t:"雰囲気がよくて、仲良くなれそうな人がいるか",s:0}]},
+  {q:"がんばって書いたSNS投稿に、反応がほとんどつかなかった。", o:[
+    {t:"数字を見直して、次の投稿をどう変えるか考える",s:3},
+    {t:"ちょっと落ち込むけど、まあいっかと切り替える",s:2},
+    {t:"誰か一人でも「見たよ」って言ってくれたら救われる",s:1},
+    {t:"仲間に話して、なぐさめてもらいたい",s:0}]},
+  {q:"言われていちばんうれしい言葉は？", o:[
+    {t:"「結果すごいね」",s:3},
+    {t:"「ちゃんと自分で考えてるね」",s:2},
+    {t:"「いつも頑張ってるね」",s:1},
+    {t:"「いてくれてよかった」",s:0}]},
+  {q:"同じコミュニティの仲間が、自分より先に結果を出した。", o:[
+    {t:"何をやったのか聞いて、自分もすぐ試す",s:3},
+    {t:"素直にすごい。自分は自分のペースでいく",s:2},
+    {t:"うれしいけど、ちょっと置いていかれた気がする",s:1},
+    {t:"一緒にお祝いできるのが楽しい。自分の結果は二の次",s:0}]},
+  {q:"一人で作業していて、手が止まってしまったら？", o:[
+    {t:"自分で調べて、なんとか解決する",s:3},
+    {t:"調べてもダメなら、ピンポイントで質問する",s:2},
+    {t:"すぐ誰かに相談したくなる",s:1},
+    {t:"みんなで作業する会があるなら、そこでやりたい",s:0}]},
+  {q:"5年後、「自分で稼ぐ力」と「ずっと一緒にいられる仲間」。どちらか一つしか手に入らないなら？", o:[
+    {t:"稼ぐ力。それがあれば仲間はあとからできる",s:3},
+    {t:"稼ぐ力。でも少し迷う",s:2},
+    {t:"仲間。お金だけあっても楽しくなさそう",s:1},
+    {t:"仲間。それがあれば何とかなる気がする",s:0}]},
+  {q:"オンライン交流会やオフ会のお知らせが届いた。", o:[
+    {t:"自分の目的に合うなら行く。合わなければ行かない",s:3},
+    {t:"予定が合えば行く",s:2},
+    {t:"わりと楽しみにしていて、ほぼ毎回行く",s:1},
+    {t:"正直、それがいちばんの楽しみかも",s:0}]},
+  {q:"あなたが頑張れなくなるのは、どんなとき？", o:[
+    {t:"やっても結果が見えないとき",s:3},
+    {t:"やり方がわからなくなったとき",s:2},
+    {t:"一人で頑張っている感じがしたとき",s:1},
+    {t:"仲間との関係がうまくいかなくなったとき",s:0}]},
+  {q:"理想の働き方にいちばん近いのは？", o:[
+    {t:"自分の名前で、自分の商品を売っている",s:3},
+    {t:"自分のペースで、好きなことを仕事にしている",s:2},
+    {t:"信頼できるチームの中で、自分の役割がある",s:1},
+    {t:"好きな人たちと、ワイワイ楽しく何かをやっている",s:0}]},
+  {q:"「稼ぎたい」と口にするとき、本当の気持ちにいちばん近いのは？", o:[
+    {t:"誰にも頼らず、自分の力で生きていけるようになりたい",s:3},
+    {t:"今の生活を、もう少しラクにしたい",s:2},
+    {t:"頑張っている自分でいたい。誰かに認められたい",s:1},
+    {t:"同じように頑張る仲間と、一緒にいたい",s:0}]},
+  {q:"参加していたコミュニティの期間が終わる。そのときいちばん思うことは？", o:[
+    {t:"学んだことを使って、ここから一人でやっていく",s:3},
+    {t:"結果が出ていたら卒業、出ていなかったら継続",s:2},
+    {t:"みんなと離れるのがさみしい",s:1},
+    {t:"次の期も絶対続けたい。ここが居場所になっている",s:0}]},
+  {q:"はじめて売上が出た！ 最初にすることは？", o:[
+    {t:"次の目標を決める",s:3},
+    {t:"自分にごほうびを買う",s:2},
+    {t:"コミュニティや仲間に報告する",s:1},
+    {t:"応援してくれた人たちと、一緒にお祝いしたい",s:0}]},
+  {q:"正直に。今のあなたにいちばん必要なのは？", o:[
+    {t:"稼ぐための具体的なスキルや戦略",s:3},
+    {t:"一人でも続けられる仕組み",s:2},
+    {t:"背中を押してくれる人",s:1},
+    {t:"安心して話せる場所と仲間",s:0}]}
+];
+
+/* ========== 10タイプ（1=プリンセス度MAX 〜 10=冒険者度MAX） ========== */
+const TYPES = [
+  {name:"お城のプリンセス", side:"p", catch:"安心できる場所があってこそ、あなたは輝く",
+   desc:"「稼ぎたい」「頑張りたい」という言葉の奥にあるのは、安心してつながれる場所がほしいという気持ち。今のあなたにとっていちばんのエネルギー源は、信頼できる人たちの存在です。それは弱さじゃなく、あなたの大事な土台。一人でがむしゃらに頑張ろうとすると、どこかで心が疲れてしまいやすいタイプでもあります。「ちゃんと稼げる自分にならなきゃ」と焦るより、まずは心が落ち着く場所があるかどうか。そこが整うと、あなたは本来の明るさを取り戻せます。",
+   tip:"まずは「ここなら大丈夫」と思える居場所を一つ持つこと。安心できてはじめて、挑戦したい気持ちが自然と育っていきます。いきなり大きな目標を立てるより、「今日はこれだけやれた」を仲間と一緒に喜べる環境を選んでみて。誰かに話を聞いてもらえるだけで、次の一歩が驚くほど軽くなります。"},
+  {name:"お茶会のプリンセス", side:"p", catch:"仲間との時間が、いちばんの栄養",
+   desc:"誰かと話したり、一緒に笑ったりする時間があなたを元気にしてくれるタイプ。一人で黙々と進めるより、気の合う仲間がいる場所で力を発揮します。人の話を聞くのが上手で、場の空気をやわらかくできるのもあなたの魅力。その一方で、楽しい時間に満足して、自分のことは後回しになりがちな一面も。仲間との時間が「やる気の充電」になっているうちは、とてもいい流れです。",
+   tip:"頑張っている仲間の近くにいるだけで、あなたのペースも自然と上がります。どんな人たちと過ごすか、環境選びを大切に。おしゃべりの中で「私もこれやってみようかな」と思えたら、それがあなたのスタートの合図。小さくてもいいので、口にしたことを一つ形にしてみてください。"},
+  {name:"舞踏会のプリンセス", side:"p", catch:"人の輪の中でこそ、いちばん輝ける",
+   desc:"一人で成果を追うより、人とのつながりの中で認められたり、喜ばれたりすることにやりがいを感じるタイプ。応援されると驚くほど力が出ます。誰かの「ありがとう」や「すごいね」が、そのまま次の行動のエネルギーになる人。逆に、反応がないと「私なんて…」と気持ちが沈みやすいところもあります。人の輪の中で輝けるのは、まわりをよく見て、相手を大切にできるからこそです。",
+   tip:"「誰に喜んでほしいか」をはっきりさせると、頑張る理由がぶれなくなります。反応の数より、届いた一人の声に目を向けてみて。あなたを応援してくれる人が見える場所に身を置くと、自分でも驚くくらい行動が続きます。"},
+  {name:"旅支度のプリンセス", side:"p", catch:"仲間がいれば、外の世界へも踏み出せる",
+   desc:"挑戦したい気持ちはちゃんとある。でも一人だと不安で、つい仲間がいる場所に戻りたくなるタイプ。誰かと一緒なら、思っている以上に遠くまで行けます。「自分で稼げるようになりたい」という思いと、「一人で大丈夫かな」という不安が、ちょうど同じくらいの大きさで心の中にある状態。準備をしっかりしてから動きたい慎重さは、裏を返せば失敗を減らせる強みでもあります。",
+   tip:"一緒に進める仲間を見つけて、小さな目標を一つずつクリアしていくのがおすすめ。「準備ができたら動く」より「動きながら整える」くらいの気持ちで大丈夫。一歩外に出てみると、思っていたより怖くなかったと気づけるはずです。"},
+  {name:"窓辺のプリンセス", side:"p", catch:"外の世界に、心が動きはじめている",
+   desc:"居場所の安心感と、自分の力で稼ぎたい気持ち。その両方の間で揺れているのが今のあなた。プリンセスと冒険者の、ちょうど境目にいます。仲間といると安心する。でも、それだけじゃ物足りない気もする。そんなモヤモヤを感じているなら、それは変わりはじめているサインです。どちらの気持ちも本物なので、無理にどちらかに決めなくても大丈夫。",
+   tip:"「本当はどっちがほしいんだろう？」と自分に聞いてみて。答えが出たとき、一気に動き出せるタイプです。迷っているときは、紙に「5年後どうなっていたいか」を書き出してみるのがおすすめ。言葉にすると、自分がどちらに進みたいのかが見えてきます。"},
+  {name:"見習い冒険者", side:"a", catch:"自分の足で歩きたい。その気持ちは本物",
+   desc:"自分で稼いでいきたいという気持ちがはっきり芽生えているタイプ。ただ、まだ周りの声や雰囲気に気持ちが揺れることも。経験を積むほど迷いが減っていきます。やる気はあるのに、「これで合ってるのかな」と不安になって手が止まる。そんな経験に心当たりがあるかもしれません。でもそれは、本気で自分の道を考えはじめた人にしか起きないことです。",
+   tip:"「誰とやるか」より「何をやるか」を先に決めると、ブレずに進めます。人の意見はヒントとして受け取りつつ、最後は自分で決める練習を。小さな「自分で決めて、やってみた」を積み重ねるほど、冒険者としての自信が育っていきます。"},
+  {name:"パーティーの冒険者", side:"a", catch:"仲間と組みながら、自分の役割で稼ぐ",
+   desc:"自立して稼ぐ意識はしっかりありつつ、仲間との協力もうまく使えるタイプ。チームの中で自分の強みを活かすのが得意です。一人で全部やろうとせず、得意な人に任せたり、逆に頼られたりしながら成果を出していける人。人とのつながりを「居心地のよさ」だけでなく「前に進む力」に変えられるのが、あなたの強みです。",
+   tip:"自分の得意を言葉にして、それをそのまま仕事にしていくのが近道。「私は何の役割でいちばん役に立てるか」が明確になると、声をかけられる機会も増えていきます。組む相手を選ぶときは、仲の良さより、目指す方向が同じかどうかを大切に。"},
+  {name:"ソロの冒険者", side:"a", catch:"一人でも、自分の道を進んでいける",
+   desc:"誰かに頼らなくても、自分で考えて動けるタイプ。結果にまっすぐ向き合う強さがあります。人とのつながりも「目的のため」に上手に使えるはず。やると決めたことは最後までやり切る粘り強さがあり、まわりからは「しっかりしている人」と見られていることも多いはず。そのぶん弱音を吐くのが苦手で、気づいたら一人で抱え込んでいることもあります。",
+   tip:"一人で抱え込みすぎないように。頼れるプロを味方につけると、成長スピードがぐっと上がります。全部を自分でやるより、「ここは任せる」を決めるのも冒険者の大事なスキル。時間とエネルギーを、あなたにしかできないことに集中させてみてください。"},
+  {name:"開拓者", side:"a", catch:"道がないなら、自分でつくる",
+   desc:"自分の力で稼ぐことにまっすぐなタイプ。決めたらすぐ動く行動力と、結果から学ぶ力があります。新しいことにも物おじしません。まだ誰もやっていないことにワクワクできて、うまくいかなくても「じゃあ次はこうしよう」と切り替えられる人。その行動力は、まわりの人にとって刺激にもなっています。ただ、スピードが速いぶん、足元の仕組みづくりが後回しになりやすいところも。",
+   tip:"自分の名前で商品を持つと、さらに大きく伸びるタイプです。勢いで走るだけでなく、「同じ成果をくり返し出せる形」を一つ作ってみて。土台ができると、あなたの行動力はもっと大きな結果につながります。"},
+  {name:"伝説の冒険者", side:"a", catch:"自分で稼ぎ、仲間も導いていく",
+   desc:"自立心も行動力もトップクラス。自分の力で道を切り開くことに迷いがありません。あなたの背中を見てついてくる人も、きっといるはず。目標を決めて、自分で動いて、結果を出す。その流れがもう体にしみついている人です。だからこそ、「なんでみんなできないんだろう」ともどかしく感じる場面もあるかもしれません。",
+   tip:"次のステージは「人を導くこと」。あなたの経験そのものが、誰かの道しるべになります。自分にとって当たり前のことほど、ほかの人にとっては価値のあるノウハウ。それを言葉にして伝えていくと、あなた一人では届かなかった場所まで進めるはずです。"}
+];
+
+const MAX = QUESTIONS.length * 3;           // 45点
+const levelOf = s => Math.min(10, Math.floor(s * 10 / (MAX + 1)) + 1);
+
+let user = {nick:""};
+let cur = 0;
+let answers = new Array(QUESTIONS.length).fill(null);  // 選んだ選択肢（元の並びのindex）
+let order = [];                                         // 表示順シャッフル
+
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function startQuiz(){
+  const nick = document.getElementById('nick').value.trim();
+  document.getElementById('nick-err').textContent = nick ? "" : "ニックネームを入れてください";
+  if(!nick) return;
+  user = {nick};
+  order = QUESTIONS.map(q => shuffle(q.o.map((_,i)=>i)));
+  answers.fill(null); cur = 0;
+  renderQ(); go('s-quiz');
+}
+
+function renderQ(){
+  const q = QUESTIONS[cur];
+  document.getElementById('bar').style.width = (cur / QUESTIONS.length * 100) + '%';
+  document.getElementById('qnum').textContent = `Q${cur+1} / ${QUESTIONS.length}`;
+  document.getElementById('qtext').textContent = q.q;
+  const box = document.getElementById('opts'); box.innerHTML = "";
+  order[cur].forEach(i=>{
+    const b = document.createElement('button');
+    b.className = 'opt' + (answers[cur]===i ? ' sel' : '');
+    b.textContent = q.o[i].t;
+    b.onclick = ()=>choose(i, b);
+    box.appendChild(b);
+  });
+  document.getElementById('prev').style.visibility = cur===0 ? 'hidden' : 'visible';
+}
+function choose(i, el){
+  answers[cur] = i;
+  document.querySelectorAll('#opts .opt').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+  setTimeout(()=>{
+    if(cur < QUESTIONS.length-1){ cur++; renderQ(); }
+    else showResult();
+  }, 220);
+}
+function prevQ(){ if(cur>0){ cur--; renderQ(); } }
+
+function showResult(){
+  document.getElementById('bar').style.width = '100%';
+  const scores = answers.map((a,qi)=>QUESTIONS[qi].o[a].s);
+  const score = scores.reduce((x,y)=>x+y,0);
+  const lv = levelOf(score);
+  const t = TYPES[lv-1];
+  const advPct = Math.round(score / MAX * 100), priPct = 100 - advPct;
+
+  document.getElementById('r-for').textContent = `${user.nick}さんは…`;
+  const tag = document.getElementById('r-tag');
+  tag.className = 'r-tag ' + t.side;
+  tag.textContent = t.side==='a' ? '冒険者タイプ' : 'プリンセスタイプ';
+  document.getElementById('r-name').textContent = t.name;
+  document.getElementById('r-level').textContent = `10段階中 レベル${lv}`;
+  document.getElementById('r-catch').textContent = t.catch;
+  document.getElementById('r-desc').textContent = t.desc;
+  document.getElementById('r-tip').textContent = t.tip;
+
+  const sc = document.getElementById('scale'); sc.innerHTML = "";
+  for(let i=1;i<=10;i++){
+    const s = document.createElement('span'); s.textContent = i;
+    if(i===lv){ s.className='on'; s.style.background = t.side==='a' ? 'var(--adv)' : 'var(--pri)'; }
+    else if(i<=5) s.style.background = '#f7dfe6'; else s.style.background = '#d5ece8';
+    sc.appendChild(s);
+  }
+  document.getElementById('rp').style.width = priPct + '%';
+  document.getElementById('ra').style.width = advPct + '%';
+  document.getElementById('rpl').textContent = `プリンセス度 ${priPct}%`;
+  document.getElementById('ral').textContent = `冒険者度 ${advPct}%`;
+
+  const all = document.getElementById('all-types'); all.innerHTML = "";
+  TYPES.forEach((x,i)=>{
+    const li = document.createElement('li');
+    li.innerHTML = `<b>Lv.${i+1}　${x.name}</b>（${x.side==='a'?'冒険者':'プリンセス'}）<br>${x.catch}`;
+    if(i===lv-1) li.style.outline = '2px solid ' + (x.side==='a' ? 'var(--adv)' : 'var(--pri)');
+    all.appendChild(li);
+  });
+
+  const msg = `シンデレラ診断の結果【${t.name}】`;
+  document.getElementById('line-btn').href = `https://line.me/R/oaMessage/${encodeURIComponent(LINE_ID)}/?${encodeURIComponent(msg)}`;
+  document.getElementById('line-add').href = `https://line.me/R/ti/p/${encodeURIComponent(LINE_ID)}`;
+  try{
+    const qr = qrcode(0,'M'); qr.addData(document.getElementById('line-btn').href); qr.make();
+    document.getElementById('qr').innerHTML = qr.createSvgTag({cellSize:4, margin:0, scalable:true});
+  }catch(e){ document.querySelector('.line-qr').style.display='none'; }
+  go('s-result');
+}
+
+function restart(){ go('s-entry'); }
+</script>
+</body>
+</html>
