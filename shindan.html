@@ -85,7 +85,11 @@ input:focus{outline:2px solid var(--pri);outline-offset:1px;border-color:transpa
 .lock-txt h3{font-size:14px;margin:0 0 4px;color:var(--sub);font-weight:700}
 .lock-txt p{margin:0;font-size:15px;position:relative;max-height:7.2em;overflow:hidden}
 .lock-txt p::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2.2em;background:linear-gradient(rgba(250,246,244,0),#faf6f4)}
-.lock-tag{display:inline-block;font-size:12px;font-weight:700;color:#06a347;margin-top:10px}
+.lock-list{margin-top:12px;padding:12px 14px;border-radius:12px;background:#f3faf4}
+.lock-list b{display:block;font-size:13px;color:#06a347;margin-bottom:4px}
+.lock-list ul{margin:0;padding:0;list-style:none;display:grid;gap:2px}
+.lock-list li{font-size:13px;color:var(--ink);padding-left:1.2em;position:relative}
+.lock-list li::before{content:"✓";position:absolute;left:0;color:#06a347;font-weight:700}
 .line-warn{font-size:12px;color:#c0475f;font-weight:700;margin:10px 0 0}
 .mail-status{font-size:13px;text-align:center;color:var(--sub);margin:22px 0 0;padding:12px;border-radius:12px;background:#f6f0ed}
 .line-box{margin:26px 0 0;padding:20px 16px;border-radius:16px;background:#f3faf4;text-align:center}
@@ -193,7 +197,16 @@ input:focus{outline:2px solid var(--pri);outline-offset:1px;border-color:transpa
         <div class="lock-txt">
           <h3>あなたはこんな人</h3>
           <p id="r-desc"></p>
-          <span class="lock-tag">🔒 続きと「これからの伸ばし方」はLINEで</span>
+          <div class="lock-list">
+            <b>🔒 LINEで読める続き</b>
+            <ul>
+              <li>あなたの強み</li>
+              <li>つまずきやすいポイント</li>
+              <li>あなたに合う環境</li>
+              <li>これからの伸ばし方</li>
+              <li>今日からできる小さな一歩</li>
+            </ul>
+          </div>
         </div>
       </div>
       <a class="btn line" id="line-btn2" href="#" target="_blank" rel="noopener" style="margin-top:14px">LINEで続きを読む</a>
